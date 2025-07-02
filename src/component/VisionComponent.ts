@@ -48,7 +48,7 @@ export class VisionComponent extends BasePage {
      looking to self host.
    </p>
 
-  <p><a href="https://dmvboardgames.com/">Here</a> is a work in progress website that will use the Gatherspiel API</p>
+  <p><a href="https://dmvboardgames.com/">Here</a> is a work in progress website that will use the Gatherspiel API.</p>
    `
   }
 }

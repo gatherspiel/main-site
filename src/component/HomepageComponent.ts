@@ -10,7 +10,7 @@ export class HomepageComponent extends BasePage {
         gulu@createthirdplaces.com for more details. </p>
       </p>
       
-      <p><a href="https://dmvboardgames.com/">Here</a> is an example of a site built using the Gatherspiel platform. </p>
+      <p><a href="https://dmvboardgames.com/">Here</a> is an example of a site built using the Gatherspiel platform.</p>
     </div>
    `
   }
