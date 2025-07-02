@@ -4,7 +4,7 @@ export class FeedbackPageComponent extends BasePage {
 
   getHtmlContent(): string {
     return `
-    <p>To submit feedback or thoughts on new features, send an email to gulu@createthirdplaces.com</p>`
+    <p>To submit feedback or thoughts on new features, send an email to gulu@createthirdplaces.com.</p>`
   }
 }
 
