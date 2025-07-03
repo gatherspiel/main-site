@@ -19,6 +19,7 @@ export default defineConfig({
         feedback: resolve(__dirname, "src/feedback.html"),
         help: resolve(__dirname, "src/help.html"),
         vision: resolve(__dirname, "src/vision.html"),
+        picker: resolve(__dirname, "src/picker.html")
       },
     },
   },
