@@ -240,8 +240,8 @@ window.onload = function(){
     canvas.addEventListener('touchend', function(event:TouchEvent){
       console.log("Touch finished")
       for(let i = 0; i<event.changedTouches.length; i++){
-        //removePlayer(event.changedTouches[i].pageX, event.changedTouches[i].pageY, canvas);
-        //delete touchEvents[event.changedTouches[i].identifier]
+        removePlayer(event.changedTouches[i].pageX, event.changedTouches[i].pageY, canvas);
+        delete touchEvents[event.changedTouches[i].identifier]
       }
     })
 
