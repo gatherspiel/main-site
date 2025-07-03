@@ -1,2 +1,7 @@
-#canvas {
+button {
+    font-size: 3rem;
+}
+
+.navbar {
+    display:none;
 }
