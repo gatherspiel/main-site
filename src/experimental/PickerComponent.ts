@@ -185,7 +185,7 @@ window.onload = function(){
     canvas.addEventListener('touchstart', function(event:TouchEvent){
 
       for(let i=0;i<event.touches.length; i++){
-        const touchEvent = event.touches[0];
+        const touchEvent = event.touches[i];
 
         var rect = canvas.getBoundingClientRect();
         const xPos = touchEvent.pageX - rect.left;
