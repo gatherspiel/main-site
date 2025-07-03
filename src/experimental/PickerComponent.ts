@@ -184,14 +184,17 @@ window.onload = function(){
 
     canvas.addEventListener('touchstart', function(event:TouchEvent){
 
-      const touchEvent = event.touches[0];
+      for(let i=0;i<event.touches.length; i++){
+        const touchEvent = event.touches[0];
 
-      var rect = canvas.getBoundingClientRect();
-      const xPos = touchEvent.pageX - rect.left;
-      const yPos = touchEvent.pageY - rect.top;
-
-      touchEvents[touchEvent.identifier] = {x:xPos, y:yPos};
-      addPlayer(xPos, yPos);
+        var rect = canvas.getBoundingClientRect();
+        const xPos = touchEvent.pageX - rect.left;
+        const yPos = touchEvent.pageY - rect.top;
+        if(!(touchEvent.identifier in touchEvents)){
+          addPlayer(xPos, yPos);
+        }
+        touchEvents[touchEvent.identifier] = {x:xPos, y:yPos};
+      }
     })
 
     let renderTimeout = -1;
@@ -230,18 +233,15 @@ window.onload = function(){
       }
       renderTimeout = setTimeout(function(){
         clearCanvas(context, canvas.width, canvas.height)
-        console.log("Repainting");
         repaint(context);
       },500)
 
-      console.log(event);
-      console.log("Moved");
     })
     canvas.addEventListener('touchend', function(event:TouchEvent){
       console.log("Touch finished")
       for(let i = 0; i<event.changedTouches.length; i++){
-        removePlayer(event.changedTouches[i].pageX, event.changedTouches[i].pageY, canvas);
-        delete touchEvents[event.changedTouches[i].identifier]
+        //removePlayer(event.changedTouches[i].pageX, event.changedTouches[i].pageY, canvas);
+        //delete touchEvents[event.changedTouches[i].identifier]
       }
     })
 
