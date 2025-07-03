@@ -25,10 +25,18 @@ type Circle = {
 
 let circles: Circle[] = [];
 
-const CIRCLE_RADIUS = 50;
+const CIRCLE_RADIUS = 150;
 
 function clearCanvas(context:any,width:any, height:any){
   context.clearRect(0,0, width, height);
+}
+
+function repaint(context:any){
+  clearCanvas(context, context.width, context.height);
+  drawWaitBar();
+  circles.forEach(function (circle:Circle){
+    drawCircleWithColor(context, circle.x, circle.y, CIRCLE_RADIUS, circle.color)
+  })
 }
 
 function randomCircleColor():string {
@@ -84,38 +92,37 @@ function drawWaitBar() {
   drawRect(context, x,y, width, height, "000000");
 }
 
-let WAIT_INTERVALS = 500;
+let WAIT_INTERVALS = 300;
 let INTERVAL_WAIT = 10;
 let intervals = WAIT_INTERVALS;
 
-
+function resetPicker(){
+  if(countdown !== -1) {
+    clearInterval(countdown);
+    countdown = -1;
+  }
+  const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  clearCanvas(context, canvas.width, canvas.height);
+  circles = [];
+}
 function countdownFunction() {
   intervals --;
   drawWaitBar();
 
   if(intervals === 0){
-    clearInterval(countdown);
 
     const random = new Random(MersenneTwister19937.autoSeed());
-
     const pickNum = random.integer(0,circles.length - 1);
     const pick:Circle = circles[pickNum];
 
-    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    clearCanvas(context, canvas.width, canvas.height);
-
+    resetPicker();
     drawCircleWithColor(context, pick.x, pick.y, CIRCLE_RADIUS, pick.color)
-    circles = [];
-    countdown = -1;
+
   }
 }
 
-function addPlayer(x:number, y: number, canvas:any){
-  var rect = canvas.getBoundingClientRect();
+function addPlayer(xPos:number, yPos: number){
 
-
-  const xPos = x - rect.left;
-  const yPos = y - rect.top;
   drawCircle(context, xPos,  yPos, CIRCLE_RADIUS)
 
   if(countdown !== -1){
@@ -124,6 +131,41 @@ function addPlayer(x:number, y: number, canvas:any){
   }
   countdown = setInterval(countdownFunction, INTERVAL_WAIT)
 }
+
+const MAX_REMOVE_DISTANCE = 10;
+function removePlayer(x:number, y: number,canvas:any){
+
+  var rect = canvas.getBoundingClientRect();
+
+  const xPos = x - rect.left;
+  const yPos = y - rect.top;
+
+
+  let updatedCircles:Circle[] = [];
+  circles.forEach(function(circle: Circle){
+
+    if(Math.sqrt(Math.pow(circle.x-xPos,2) + Math.pow(circle.y-yPos,2)) <= MAX_REMOVE_DISTANCE){
+      console.log("Removing");
+      drawCircleWithColor(context, x,y, CIRCLE_RADIUS, "FFFFFF")
+    }else {
+      updatedCircles.push(circle);
+    }
+  })
+
+  circles = updatedCircles;
+  if(circles.length === 0 && countdown != -1){
+    console.log("Clearing")
+    resetPicker();
+  }
+}
+
+type Point = {
+  x: number,
+  y: number,
+}
+
+
+let touchEvents:Record<number, Point> = {};
 
 let countdown:number = -1;
 let context: CanvasRenderingContext2D;
@@ -141,13 +183,75 @@ window.onload = function(){
     context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
     canvas.addEventListener('touchstart', function(event:TouchEvent){
-      addPlayer(event.touches[0].pageX, event.touches[0].pageY, canvas);
+
+      const touchEvent = event.touches[0];
+
+      var rect = canvas.getBoundingClientRect();
+      const xPos = touchEvent.pageX - rect.left;
+      const yPos = touchEvent.pageY - rect.top;
+
+      touchEvents[touchEvent.identifier] = {x:xPos, y:yPos};
+      addPlayer(xPos, yPos);
+    })
+
+    let renderTimeout = -1;
+    canvas.addEventListener('touchmove', function(event:TouchEvent){
+
+      const touchMoveUpdater = function(){
+        for(let i =0; i<event.changedTouches.length; i++){
+          const eventToUpdate = event.changedTouches[i];
+
+          var rect = canvas.getBoundingClientRect();
+          const xPos = eventToUpdate.pageX - rect.left;
+          const yPos = eventToUpdate.pageY - rect.top;
+
+          const prevXPos = touchEvents[eventToUpdate.identifier].x;
+          const prevYPos = touchEvents[eventToUpdate.identifier].y;
+
+
+          circles.forEach(function(circle: Circle){
+            if(circle.x === prevXPos && circle.y === prevYPos){
+              circle.x = xPos;
+              circle.y = yPos;
+              touchEvents[eventToUpdate.identifier].x = xPos;
+              touchEvents[eventToUpdate.identifier].y = yPos;
+            } else {
+              console.log("No move");
+            }
+          })
+
+        }
+      }
+
+      touchMoveUpdater();
+
+      if(renderTimeout !== -1){
+        clearTimeout(renderTimeout)
+      }
+      renderTimeout = setTimeout(function(){
+        clearCanvas(context, canvas.width, canvas.height)
+        console.log("Repainting");
+        repaint(context);
+      },500)
+
+      console.log(event);
+      console.log("Moved");
+    })
+    canvas.addEventListener('touchend', function(event:TouchEvent){
+      console.log("Touch finished")
+      for(let i = 0; i<event.changedTouches.length; i++){
+        removePlayer(event.changedTouches[i].pageX, event.changedTouches[i].pageY, canvas);
+        delete touchEvents[event.changedTouches[i].identifier]
+      }
     })
 
     canvas.addEventListener('click', function(event){
       // @ts-ignore
       if(event.pointerType === "mouse"){
-        addPlayer(event.pageX, event.pageY, canvas);
+        var rect = canvas.getBoundingClientRect();
+        const xPos = event.pageX - rect.left;
+        const yPos = event.pageY - rect.top;
+        addPlayer(xPos,yPos);
       }
     })
   } else {
