@@ -4,6 +4,16 @@ export function getMonopolyGameStyle(){
 }
 
 export function getMonopolyHtml() {
+
+  const old:any = document.querySelector;
+  document.querySelector = function(...args: any){
+    if(args[0] === '.monopolyContent'){
+      old.apply(this,args).style="";
+    }
+    // @ts-ignore
+    return old.apply(this,args)
+  }
+
   let html= '';
 
   for(let i=0;i<9999;i++){
@@ -28,11 +38,9 @@ export function getMonopolyHtml() {
 
 const monopolyProperties = [
   "Atlantic Avenue",
-  "B & O Railroad",
   "Baltic Avenue",
   "Boardwalk",
   "Connecticut Avenue",
-  "Electric Company",
   "Illinois Avenue",
   "Indiana Avenue",
   "Kentucky Avenue",
@@ -44,14 +52,10 @@ const monopolyProperties = [
   "Pacific Avenue",
   "Park Place",
   "Pennsylvania Avenue",
-  "Pennsylvania Railroad",
-  "Reading Railroad",
-  "Short Line",
   "St. Charles Place",
   "St. James Place",
   "States Avenue",
   "Tennessee Avenue",
   "Ventnor Avenue",
   "Vermont Avenue",
-  "Virginia Avenue",
-  "Water Works"]
+  "Virginia Avenue"]
