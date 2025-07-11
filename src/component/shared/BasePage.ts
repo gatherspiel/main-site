@@ -1,4 +1,4 @@
-
+import {getMonopolyGameStyle, getMonopolyHtml} from "../../boardgameInfo/monopolyInfo.ts";
 
 export abstract class BasePage extends HTMLElement {
   connectedCallback() {
@@ -16,8 +16,11 @@ export abstract class BasePage extends HTMLElement {
         ${this.getHtmlContent()}
       </div>
     </div>
+    
+    <div class="monopolyContent" style="${getMonopolyGameStyle()}">${getMonopolyHtml()}</div>    
     `
   }
 
   abstract getHtmlContent(): string
 }
+
