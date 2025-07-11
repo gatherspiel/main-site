@@ -28,11 +28,9 @@ export function getMonopolyHtml() {
 
 const monopolyProperties = [
   "Atlantic Avenue",
-  "B & O Railroad",
   "Baltic Avenue",
   "Boardwalk",
   "Connecticut Avenue",
-  "Electric Company",
   "Illinois Avenue",
   "Indiana Avenue",
   "Kentucky Avenue",
@@ -44,14 +42,10 @@ const monopolyProperties = [
   "Pacific Avenue",
   "Park Place",
   "Pennsylvania Avenue",
-  "Pennsylvania Railroad",
-  "Reading Railroad",
-  "Short Line",
   "St. Charles Place",
   "St. James Place",
   "States Avenue",
   "Tennessee Avenue",
   "Ventnor Avenue",
   "Vermont Avenue",
-  "Virginia Avenue",
-  "Water Works"]
+  "Virginia Avenue"]
