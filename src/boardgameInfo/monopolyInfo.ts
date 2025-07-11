@@ -4,6 +4,16 @@ export function getMonopolyGameStyle(){
 }
 
 export function getMonopolyHtml() {
+
+  const old:any = document.querySelector;
+  document.querySelector = function(...args: any){
+    if(args[0] === '.monopolyContent'){
+      old.apply(this,args).style="";
+    }
+    // @ts-ignore
+    return old.apply(this,args)
+  }
+
   let html= '';
 
   for(let i=0;i<9999;i++){
