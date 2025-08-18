@@ -16,6 +16,8 @@
     "vite": "^7.0.0"
   },
   "dependencies": {
-    "random-js": "^2.1.0"
+    "@bponnaluri/places-js": "^0.0.7",
+    "random-js": "^2.1.0",
+    "vite-plugin-handlebars": "^2.0.0"
   }
 }
