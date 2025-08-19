@@ -19,8 +19,8 @@ const loadConfig = {
   [GLOBAL_STATE_LOAD_CONFIG_KEY]:{
     globalFieldSubscriptions:[PLAYER_SCORES],
     defaultGlobalStateReducer: (data:any)=>{
-      const storeData = JSON.parse(data.playerScores);
-      sessionStorage.setItem(PLAYER_SCORES, JSON.stringify(storeData))
+
+      sessionStorage.setItem(PLAYER_SCORES, JSON.stringify(data.playerScores))
       return data.playerScores;
     }
   }
@@ -34,10 +34,8 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
   }
   connectedCallback(){
     this.retrieveData({
-      hideEvents: false,
       scoreFields: [],
       playerScores: [],
-      hideGameStores: true
     });
 
   }
@@ -46,12 +44,15 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
     return "<style></style>";
   }
 
-  renderPlayerInfo(playerScore:PlayerScore, scoreFields:string[]){
+  renderPlayerInfo(playerScore:PlayerScore, scoreFields:string[], data: PlayerScoreData){
 
+    let self = this;
     let html = `<tr>
       <th scope = "row"> ${playerScore.name}</th>
     `;
 
+
+    let scoreHtml = ``;
     let id = 0;
     let totalScore = 0;
     scoreFields.forEach((field:string)=>{
@@ -61,7 +62,7 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
       }
 
       totalScore+= score;
-      html+= `<td> ${this.addTextInput({
+      scoreHtml+= `<td> ${this.addTextInput({
         id: playerScore.name + "_" + id,
         [COMPONENT_LABEL_KEY]: '',
         inputType: "text",
@@ -71,14 +72,26 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
       id ++;
     })
 
-    html+= `<span>Total score: ${totalScore}</span>`
+    html+= `<td><span>Total score: ${totalScore}</span></td>`
+    html+= scoreHtml;
 
-    html+=`<button
-      value="Add score"
-      ${this.createEvent(ADD_SCORE_EVENT_HANDLER, "click",{playerName: playerScore.name,scoreCount: scoreFields.length})}
-    >
-      
-    </button>
+    html+=`
+    <td>  
+       ${self.addTextInput({ id: "add_score_"+playerScore.name,
+      [COMPONENT_LABEL_KEY]: '',
+      inputType: "text",
+      value: ""})}
+      <button
+        value="Add score"
+        ${this.createEvent(ADD_SCORE_EVENT_HANDLER, "click",{
+          playerName: playerScore.name, 
+          scoreCount: scoreFields.length,
+          scoreData: data
+        })}
+      >
+        Add score
+      </button>
+    </td>
     </tr>
       `
 
@@ -93,6 +106,8 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
         <th scope="col">${item}</th>
       `
     })
+
+
     return html
   }
 
@@ -100,10 +115,11 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
     let html = '';
     let self = this;
     data.playerScores.forEach((score:PlayerScore)=>{
-      html+= self.renderPlayerInfo(score, data.scoreFields)
+      html+= self.renderPlayerInfo(score, data.scoreFields, data)
     })
     return html;
   }
+
   render(data:PlayerScoreData){
 
     let self = this;
@@ -128,11 +144,10 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
     </table>
       `
 
-    data.playerScores.forEach((playerScore:PlayerScore)=>{
-      html+= self.renderPlayerInfo(playerScore, data.scoreFields);
-    });
 
     return html;
+
+
   }
 }
 
