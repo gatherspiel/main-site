@@ -1,4 +1,4 @@
-import {BaseThunk, BaseThunkAction} from "@bponnaluri/places-js";
+import {BaseThunk} from "@bponnaluri/places-js";
 
 
 import {PLAYER_SCORES} from "./InitGlobalStateConfig.ts";
@@ -7,7 +7,6 @@ import type {PlayerScoreData} from "./types/PlayerScoreData.ts";
 // @ts-ignore
 
 class SessionStoreDataAction {
-
 
   async retrieveData(): Promise<any> {
     const scoreData = sessionStorage.getItem(PLAYER_SCORES);
@@ -56,3 +55,4 @@ export function createUpdatePlayerScoresThunk(){
     }
   })
 }
+

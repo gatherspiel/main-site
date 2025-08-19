@@ -1,13 +1,14 @@
 
+
+import {BaseTemplateDynamicComponent} from "@bponnaluri/places-js";
+
 import {
-  BaseDynamicComponent,
   COMPONENT_LABEL_KEY,
   GLOBAL_STATE_LOAD_CONFIG_KEY,
-  setupGlobalState
 } from "@bponnaluri/places-js";
 import {PLAYER_SCORES, setupStateFields} from "./InitGlobalStateConfig.ts";
 import type {PlayerScore, PlayerScoreData} from "./types/PlayerScoreData.ts";
-import {ADD_SCORE_EVENT_HANDLER} from "./ScoreEventHandlers.ts";
+import {ADD_PLAYER_HANDLER, ADD_SCORE_EVENT_HANDLER} from "./ScoreEventHandlers.ts";
 import {createPlayerScoresThunk} from "./PlayerScoresThunk.ts";
 
 const loadConfig = {
@@ -26,8 +27,7 @@ const loadConfig = {
 }
 
 setupStateFields();
-console.log(BaseDynamicComponent)
-export class ScoreTrackerComponent extends BaseDynamicComponent {
+export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
   constructor() {
     super(loadConfig);
@@ -40,6 +40,10 @@ export class ScoreTrackerComponent extends BaseDynamicComponent {
       hideGameStores: true
     });
 
+  }
+
+  getTemplateStyle(): string {
+    return "<style></style>";
   }
 
   renderPlayerInfo(playerScore:PlayerScore, scoreFields:string[]){
@@ -81,26 +85,40 @@ export class ScoreTrackerComponent extends BaseDynamicComponent {
     return html;
   }
 
+  renderScoreFields(data:PlayerScoreData){
+    let html='';
+
+    data.scoreFields.forEach(item=>{
+      html+= `
+        <th scope="col">${item}</th>
+      `
+    })
+    return html
+  }
+
+  renderPlayers(data: PlayerScoreData){
+    let html = '';
+    let self = this;
+    data.playerScores.forEach((score:PlayerScore)=>{
+      html+= self.renderPlayerInfo(score, data.scoreFields)
+    })
+    return html;
+  }
   render(data:PlayerScoreData){
 
     let self = this;
-    let html = `<table>
+    let html = `
+       ${self.addTextInput({ id: "add_player_input",
+      [COMPONENT_LABEL_KEY]: '',
+      inputType: "text",
+      value: ""})}
+      <button value="Add player" ${this.createEvent(ADD_PLAYER_HANDLER,"click")}>Add player</button>
+    <table>
       <thead>
-        ${data.scoreFields.reduce(
-          (accumulator, currentValue)=>{
-            return accumulator + `<tr>
-              <th scope="col">${currentValue}</th>
-            </tr>
-            ` 
-            }, ''
-        )}) 
+        ${this.renderScoreFields(data)}
       </thead>
       <tbody>
-        ${data.playerScores.reduce(
-          (accumulator, playerScore:PlayerScore)=>{
-            return accumulator + self.renderPlayerInfo(playerScore, data.scoreFields);
-          },''
-        )}) 
+        ${this.renderPlayers(data)}
       </tbody>
       <tr>
         <th scope="row"></th>
@@ -114,10 +132,7 @@ export class ScoreTrackerComponent extends BaseDynamicComponent {
       html+= self.renderPlayerInfo(playerScore, data.scoreFields);
     });
 
-    console.log(data);
-    return `
-      <h1>Test</h1>
-    `
+    return html;
   }
 }
 
