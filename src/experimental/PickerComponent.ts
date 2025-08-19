@@ -12,6 +12,7 @@ export class PickerComponent extends BasePage {
   }
 }
 
+
 if (!customElements.get("picker-component")) {
   customElements.define("picker-component", PickerComponent);
 }

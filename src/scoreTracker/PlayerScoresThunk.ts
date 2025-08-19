@@ -1,8 +1,12 @@
+import {BaseThunk, BaseThunkAction} from "@bponnaluri/places-js";
+
+
 import {PLAYER_SCORES} from "./InitGlobalStateConfig.ts";
 import type {PlayerScoreData} from "./types/PlayerScoreData.ts";
 
+// @ts-ignore
 
-class SessionStoreDataAction extends BaseThunkAction {
+class SessionStoreDataAction {
 
 
   async retrieveData(): Promise<any> {
@@ -15,14 +19,16 @@ class SessionStoreDataAction extends BaseThunkAction {
   }
 }
 
-export const PLAYER_SCORES_THUNK = new BaseThunk(new SessionStoreDataAction()).addGlobalStateReducer((state:any)=>{
-  return {
-    [PLAYER_SCORES]: state
-  }
-})
+export function createPlayerScoresThunk(){
+  return new BaseThunk(new SessionStoreDataAction()).addGlobalStateReducer((state:any)=>{
+    return {
+      [PLAYER_SCORES]: state
+    }
+  })
+}
 
 
-class UpdatePlayerScoresAction extends BaseThunkAction {
+class UpdatePlayerScoresAction {
   async retrieveData(params:any):Promise<any>{
     let updatedState:PlayerScoreData = {...params.scoreState}
 
@@ -42,8 +48,11 @@ class UpdatePlayerScoresAction extends BaseThunkAction {
   }
 }
 
-export const UPDATE_PLAYER_SCORES_THUNK = new BaseThunk(new UpdatePlayerScoresAction()).addGlobalStateReducer((state:any)=>{
-  return {
-    [PLAYER_SCORES]:state
-  }
-})
+
+export function createUpdatePlayerScoresThunk(){
+  return new BaseThunk(new UpdatePlayerScoresAction()).addGlobalStateReducer((state:any)=> {
+    return {
+      [PLAYER_SCORES]: state
+    }
+  })
+}

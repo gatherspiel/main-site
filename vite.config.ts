@@ -13,7 +13,9 @@ export default defineConfig({
       partialDirectory: resolve(__dirname, 'src/shared'),
     }),
   ],
-
+  optimizeDeps: {
+    disabled: false,
+  },
   root: "src/",
   publicDir: "../public",
   build: {

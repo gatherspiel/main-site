@@ -1,32 +1,42 @@
 
-import {BaseDynamicComponent} from "@bponnaluri/places-js";
-import {PLAYER_SCORES} from "./InitGlobalStateConfig.ts";
-import {PLAYER_SCORES_THUNK} from "./PlayerScoresThunk.ts";
+import {
+  BaseDynamicComponent,
+  COMPONENT_LABEL_KEY,
+  GLOBAL_STATE_LOAD_CONFIG_KEY,
+  setupGlobalState
+} from "@bponnaluri/places-js";
+import {PLAYER_SCORES, setupStateFields} from "./InitGlobalStateConfig.ts";
 import type {PlayerScore, PlayerScoreData} from "./types/PlayerScoreData.ts";
 import {ADD_SCORE_EVENT_HANDLER} from "./ScoreEventHandlers.ts";
+import {createPlayerScoresThunk} from "./PlayerScoresThunk.ts";
 
 const loadConfig = {
   dataFields:[{
     fieldName: PLAYER_SCORES,
-    dataSource: PLAYER_SCORES_THUNK
+    dataSource: createPlayerScoresThunk()
   }],
   [GLOBAL_STATE_LOAD_CONFIG_KEY]:{
     globalFieldSubscriptions:[PLAYER_SCORES],
     defaultGlobalStateReducer: (data:any)=>{
       const storeData = JSON.parse(data.playerScores);
-      sessionStorage.setItem(PLAYER_SCORES, JSON.stringify(data))
+      sessionStorage.setItem(PLAYER_SCORES, JSON.stringify(storeData))
       return data.playerScores;
     }
   }
 }
 
+setupStateFields();
+console.log(BaseDynamicComponent)
 export class ScoreTrackerComponent extends BaseDynamicComponent {
 
+  constructor() {
+    super(loadConfig);
+  }
   connectedCallback(){
-    this.updateWithCustomReducer({
+    this.retrieveData({
       hideEvents: false,
-      hideConventions: true,
-      hideRestaurants: true,
+      scoreFields: [],
+      playerScores: [],
       hideGameStores: true
     });
 
@@ -74,7 +84,7 @@ export class ScoreTrackerComponent extends BaseDynamicComponent {
   render(data:PlayerScoreData){
 
     let self = this;
-    const html = `<table>
+    let html = `<table>
       <thead>
         ${data.scoreFields.reduce(
           (accumulator, currentValue)=>{
