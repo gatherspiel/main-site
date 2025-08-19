@@ -3,10 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>Score Tracker</title>
+  <link rel="stylesheet" type="text/css" href="/styles/style.css">
+
 </head>
 <body>
-  <script type="module" src="component/ScoreTrackerComponent.ts"></script>
+  <script type="module" src="scoreTracker/ScoreTrackerComponent.ts"></script>
+  <div class="content">
+    {{>navbar}}
+    <div class="container">
+      <score-component></score-component>
 
-  <score-component></score-component>
+    </div>
+  </div>
 </body>
 </html>
