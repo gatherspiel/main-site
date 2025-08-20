@@ -39,6 +39,9 @@ const loadConfig:ComponentLoadConfig = {
   }
 }
 
+//TODO: Implement option for players to see round scores by scrolling.
+const SHOW_ROUND_SCORES = false;
+
 export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
   constructor() {
@@ -55,9 +58,22 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
   getTemplateStyle(): string {
     return `<style>
 
-
+      table {
+        width:100%;
+        table-layout:fixed;
+      }
       th {
         font-size: 3rem;
+        padding:20px;
+
+      }
+      
+      #top input {
+        max-height: 3rem;
+      }
+      td {
+        font-size: 3rem;
+        padding:20px;
       }
 
       #top, #clear {
@@ -66,21 +82,43 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
         justify-content: center
       }
       
+      input {
+        border: 5px solid var(--clr-dark-blue);
+        font-size: 3rem;
+        max-width:5rem;
+      }
       #clear div {
         justify-content: center;
       }
       
+      table input {
+        font-size: 3rem;
+        padding-bottom: 0.5rem;
+        padding-top: 0.5rem;
+        padding-left: 0.1rem;
+      }
+      
+      #top input {
+        font-size: 5rem;
+        max-height: 4.5rem;
+        max-width:30rem;
+      }
+      
       #top button {
-        margin-top:3rem;
         margin-right:3rem;
         margin-left: 3rem;
       }
       
+      #score-info {
+        overflow-x: auto
+      }
       button {
         background-color: var(--clr-light-blue);
         font-size: 5rem;
         border-radius: 15px;
       }
+      
+
 
     </style>`;
   }
@@ -110,12 +148,16 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
       }
 
       totalScore+= score;
-      scoreHtml+= `<td> ${this.addShortInput({
-        eventConfig: UPDATE_SCORE_HANDLER,
-        id: playerScore.name + "_" + id,
-        inputType: "text",
-        value: ""+score
-      })} </td>`
+
+      if(SHOW_ROUND_SCORES){
+        scoreHtml+= `<td> ${this.addShortInput({
+          eventConfig: UPDATE_SCORE_HANDLER,
+          id: playerScore.name + "_" + id,
+          inputType: "text",
+          value: ""+score
+        })} </td>`
+      }
+
 
       id ++;
     })
@@ -152,16 +194,21 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
     console.log(data.scoreFields)
     let html=`
-      <th></th>
+      <th>Player</th>
       <th></th> 
+      <th></th>
       <th></th>`;
 
-    data.scoreFields.forEach(item=>{
-      html+= `
+
+    if(SHOW_ROUND_SCORES){
+      data.scoreFields.forEach(item=>{
+        html+= `
     
         <th scope="col">Round ${item}</th>
       `
-    })
+      })
+    }
+
 
 
     return html
@@ -181,13 +228,17 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
     let self = this;
     let html = `
       <div id = "top">
-        ${self.addShortInput({ 
+        <div>
+        ${self.addShortInput({
           id: "add_player_input",
           inputType: "text",
+          lineBreakAfterLabel:false,
           value: ""
         })}
-        <br>
+        </div>
+        <div>
         <button value="Add player" ${this.createEvent(ADD_PLAYER_HANDLER,"click")}>Add player</button>
+        </div>
         <div>
         </div>
       </div>
@@ -196,23 +247,22 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
         <div>
          <button value="Clear" ${this.createEvent(CLEAR_DATA_HANDLER,"click")}>Clear scores and players</button>
        
-</div>
+        </div>
       </div>
    
+    <div id="table-wrapper">
 
-    <table>
-      <thead>
-        ${this.renderScoreFields(data)}
-      </thead>
-      <tbody>
-        ${this.renderPlayers(data)}
-      </tbody>
-      <tr>
-        <th scope="row"></th>
-      </tr>
-      
-      
-    </table>
+          <table>
+            <thead>
+              ${this.renderScoreFields(data)}
+            </thead>
+            <tbody>
+              ${this.renderPlayers(data)}
+            </tbody>    
+          </table>   
+
+      </div>
+
       `
 
 
