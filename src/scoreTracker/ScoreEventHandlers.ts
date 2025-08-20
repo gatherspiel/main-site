@@ -30,6 +30,25 @@ export const ADD_PLAYER_HANDLER: EventHandlerThunkConfig = {
   }
 }
 
+export const UPDATE_SCORE_HANDLER: EventHandlerThunkConfig = {
+  eventHandler:(params:any)=>{
+
+    const updatedState:PlayerScoreData = JSON.parse(JSON.stringify(params.componentStore));
+    console.log(JSON.stringify(params));
+
+    const index = (params.targetId.split("_")[1]);
+    const name  = params.targetId.split("_")[0];
+    for(let i=0;i<updatedState.playerScores.length;i++){
+      if(updatedState.playerScores[i].name === name){
+        updatedState.playerScores[i].scoreData[index] = params.formSelector.getValue(params.targetId);
+
+        return updatedState;
+      }
+    }
+  },
+  componentReducer:(data:PlayerScoreData)=>data
+}
+
 export const CLEAR_DATA_HANDLER: EventHandlerThunkConfig = {
   eventHandler:()=>{
     console.log("Hi");
@@ -37,7 +56,10 @@ export const CLEAR_DATA_HANDLER: EventHandlerThunkConfig = {
   globalStoreReducer:()=>{
     console.log("Potatoes")
     return {
-      [PLAYER_SCORES]: {}
+      [PLAYER_SCORES]: {
+        scoreFields:[],
+        playerScores: []
+      }
     }
   }
 }
@@ -68,11 +90,8 @@ export const ADD_SCORE_EVENT_HANDLER: EventHandlerThunkConfig = {
         const scoreCount = params.scoreCount
         updatedPlayerScore[""+scoreCount.toString()] = params.score;
 
-        console.log(scores.scoreFields.length);
-        console.log(params.scoreCount);
 
         if(scores.scoreFields.length -1 < params.scoreCount) {
-          console.log("Adding field")
           updatedState.scoreFields.push(""+params.scoreCount);
         }
       }

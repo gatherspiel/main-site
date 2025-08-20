@@ -1,13 +1,24 @@
-
+/**
+ * TODO
+ *
+ * -Fix issue with clearing data and not refreshing(This might be a framework issue)
+ * -Make sure updating state in text boxes works
+ * -Fix alignment of round headers
+ * -Update styling of buttons
+ */
 
 
 
 import type {PlayerScore, PlayerScoreData} from "./types/PlayerScoreData.ts";
-import {ADD_PLAYER_HANDLER, ADD_SCORE_EVENT_HANDLER, CLEAR_DATA_HANDLER} from "./ScoreEventHandlers.ts";
+import {
+  ADD_PLAYER_HANDLER,
+  ADD_SCORE_EVENT_HANDLER,
+  CLEAR_DATA_HANDLER,
+  UPDATE_SCORE_HANDLER
+} from "./ScoreEventHandlers.ts";
 import {createPlayerScoresThunk} from "./PlayerScoresThunk.ts";
 import {
   BaseTemplateDynamicComponent,
-  COMPONENT_LABEL_KEY,
   type ComponentLoadConfig,
   GLOBAL_STATE_LOAD_CONFIG_KEY
 } from "../framework/src";
@@ -42,12 +53,39 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
   }
 
   getTemplateStyle(): string {
-    return "<style></style>";
+    return `<style>
+
+
+      th {
+        font-size: 3rem;
+      }
+
+      #top, #clear {
+        padding-top:3rem;
+        display: flex;
+        justify-content: center
+      }
+      
+      #clear div {
+        justify-content: center;
+      }
+      
+      #top button {
+        margin-top:3rem;
+        margin-right:3rem;
+        margin-left: 3rem;
+      }
+      
+      button {
+        background-color: var(--clr-light-blue);
+        font-size: 5rem;
+        border-radius: 15px;
+      }
+
+    </style>`;
   }
 
   renderPlayerInfo(playerScore:PlayerScore, scoreFields:string[], data: PlayerScoreData){
-
-    console.log(playerScore);
 
     let self = this;
     let html = `<tr>
@@ -73,8 +111,8 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
       totalScore+= score;
       scoreHtml+= `<td> ${this.addShortInput({
+        eventConfig: UPDATE_SCORE_HANDLER,
         id: playerScore.name + "_" + id,
-        [COMPONENT_LABEL_KEY]: '',
         inputType: "text",
         value: ""+score
       })} </td>`
@@ -86,20 +124,22 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
       <td>
         <span>Total score: ${totalScore}</span>
       </td>
-      <td>  
-         ${self.addShortInput({ id: "add_score_"+playerScore.name,
-        [COMPONENT_LABEL_KEY]: '',
-        inputType: "text",
-        value: ""})}
+       <td>
         <button
           value="Add score"
           ${this.createEvent(ADD_SCORE_EVENT_HANDLER, "click",{
-            playerName: playerScore.name,
-            scoreCount: scoreCount,
-            scoreData: data
-          })}
+          playerName: playerScore.name,
+          scoreCount: scoreCount,
+          scoreData: data
+        })}
           >Add score</button>
       </td>
+      <td>  
+         ${self.addShortInput({ id: "add_score_"+playerScore.name,
+        inputType: "text",
+        value: ""})}
+     </td>
+
     `
 
     html+= scoreHtml;
@@ -109,10 +149,16 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
   }
 
   renderScoreFields(data:PlayerScoreData){
-    let html='';
+
+    console.log(data.scoreFields)
+    let html=`
+      <th></th>
+      <th></th> 
+      <th></th>`;
 
     data.scoreFields.forEach(item=>{
       html+= `
+    
         <th scope="col">Round ${item}</th>
       `
     })
@@ -134,12 +180,25 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
     let self = this;
     let html = `
-       ${self.addShortInput({ id: "add_player_input",
-      [COMPONENT_LABEL_KEY]: '',
-      inputType: "text",
-      value: ""})}
-      <button value="Add player" ${this.createEvent(ADD_PLAYER_HANDLER,"click")}>Add player</button>
-      <button value="Clear" ${this.createEvent(CLEAR_DATA_HANDLER,"click")}>Clear scores and players</button>
+      <div id = "top">
+        ${self.addShortInput({ 
+          id: "add_player_input",
+          inputType: "text",
+          value: ""
+        })}
+        <br>
+        <button value="Add player" ${this.createEvent(ADD_PLAYER_HANDLER,"click")}>Add player</button>
+        <div>
+        </div>
+      </div>
+      
+      <div id = "clear">
+        <div>
+         <button value="Clear" ${this.createEvent(CLEAR_DATA_HANDLER,"click")}>Clear scores and players</button>
+       
+</div>
+      </div>
+   
 
     <table>
       <thead>

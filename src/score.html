@@ -5,6 +5,17 @@
   <title>Score Tracker</title>
   <link rel="stylesheet" type="text/css" href="/styles/style.css">
 
+  <style>
+      #background {
+          position: fixed;
+          top: 0;
+          bottom: 0;
+          width: 100%;
+          z-index: -100;
+          background-color: var(--clr-very-light-blue)
+      }
+
+  </style>
 </head>
 <body>
   <script type="module" src="scoreTracker/ScoreTrackerComponent.ts"></script>
@@ -15,5 +26,7 @@
 
     </div>
   </div>
+  <div id = "background"></div>
+
 </body>
 </html>
