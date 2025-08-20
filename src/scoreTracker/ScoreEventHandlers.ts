@@ -1,6 +1,7 @@
 
-import {createNewPlayerThunk, createUpdatePlayerScoresThunk} from "./PlayerScoresThunk.ts";
-import type {EventHandlerThunkConfig} from "@bponnaluri/places-js";
+import type {EventHandlerThunkConfig} from "../framework/src";
+import type {PlayerScore, PlayerScoreData} from "./types/PlayerScoreData.ts";
+import {PLAYER_SCORES} from "./ScoreTrackerComponent.ts";
 
 export const ADD_PLAYER_HANDLER: EventHandlerThunkConfig = {
   eventHandler:(params:any)=>{
@@ -9,7 +10,36 @@ export const ADD_PLAYER_HANDLER: EventHandlerThunkConfig = {
       scoreState: params.componentStore
     }
   },
-  apiRequestThunk: createNewPlayerThunk()
+  globalStoreReducer:(params:any)=>{
+    const scores = params.scoreState;
+
+    const updatedScores:PlayerScore[] = Array.from(scores.playerScores)
+
+    updatedScores.push({
+      name: params.playerName,
+      scoreData: {}
+    })
+
+    console.log(updatedScores)
+    return {
+      [PLAYER_SCORES]: {
+        scoreFields: scores.scoreFields,
+        playerScores: updatedScores
+      }
+    }
+  }
+}
+
+export const CLEAR_DATA_HANDLER: EventHandlerThunkConfig = {
+  eventHandler:()=>{
+    console.log("Hi");
+  },
+  globalStoreReducer:()=>{
+    console.log("Potatoes")
+    return {
+      [PLAYER_SCORES]: {}
+    }
+  }
 }
 
 export const ADD_SCORE_EVENT_HANDLER: EventHandlerThunkConfig = {
@@ -20,5 +50,44 @@ export const ADD_SCORE_EVENT_HANDLER: EventHandlerThunkConfig = {
       scoreCount: params.params.scoreCount,
       scoreState: params.params.scoreData};
   },
-  apiRequestThunk: createUpdatePlayerScoresThunk()
+  globalStoreReducer:(params:any)=>{
+
+    const scores: PlayerScoreData = params.scoreState;
+
+    let updatedState:PlayerScoreData = {
+      scoreFields:Array.from(scores.scoreFields),
+      playerScores: []
+    }
+
+    scores.playerScores.forEach((playerScore: PlayerScore)=>{
+
+      let updatedPlayerScore:Record<string,string> = {...playerScore.scoreData};
+
+      if(playerScore.name === params.playerName){
+
+        const scoreCount = params.scoreCount
+        updatedPlayerScore[""+scoreCount.toString()] = params.score;
+
+        console.log(scores.scoreFields.length);
+        console.log(params.scoreCount);
+
+        if(scores.scoreFields.length -1 < params.scoreCount) {
+          console.log("Adding field")
+          updatedState.scoreFields.push(""+params.scoreCount);
+        }
+      }
+
+      updatedState.playerScores.push({
+        name: playerScore.name,
+        scoreData: updatedPlayerScore
+      })
+
+
+    });
+
+    return {
+      [PLAYER_SCORES]: updatedState
+    }
+
+  }
 }

@@ -1,17 +1,20 @@
 
 
-import {BaseTemplateDynamicComponent} from "@bponnaluri/places-js";
 
-import {
-  COMPONENT_LABEL_KEY,
-  GLOBAL_STATE_LOAD_CONFIG_KEY,
-} from "@bponnaluri/places-js";
-import {PLAYER_SCORES, setupStateFields} from "./InitGlobalStateConfig.ts";
+
 import type {PlayerScore, PlayerScoreData} from "./types/PlayerScoreData.ts";
-import {ADD_PLAYER_HANDLER, ADD_SCORE_EVENT_HANDLER} from "./ScoreEventHandlers.ts";
+import {ADD_PLAYER_HANDLER, ADD_SCORE_EVENT_HANDLER, CLEAR_DATA_HANDLER} from "./ScoreEventHandlers.ts";
 import {createPlayerScoresThunk} from "./PlayerScoresThunk.ts";
+import {
+  BaseTemplateDynamicComponent,
+  COMPONENT_LABEL_KEY,
+  type ComponentLoadConfig,
+  GLOBAL_STATE_LOAD_CONFIG_KEY
+} from "../framework/src";
 
-const loadConfig = {
+export const PLAYER_SCORES = "playerScores";
+
+const loadConfig:ComponentLoadConfig = {
   dataFields:[{
     fieldName: PLAYER_SCORES,
     dataSource: createPlayerScoresThunk()
@@ -19,14 +22,12 @@ const loadConfig = {
   [GLOBAL_STATE_LOAD_CONFIG_KEY]:{
     globalFieldSubscriptions:[PLAYER_SCORES],
     defaultGlobalStateReducer: (data:any)=>{
-
       sessionStorage.setItem(PLAYER_SCORES, JSON.stringify(data.playerScores))
       return data.playerScores;
     }
   }
 }
 
-setupStateFields();
 export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
   constructor() {
@@ -46,6 +47,8 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
   renderPlayerInfo(playerScore:PlayerScore, scoreFields:string[], data: PlayerScoreData){
 
+    console.log(playerScore);
+
     let self = this;
     let html = `<tr>
       <th scope = "row"> ${playerScore.name}</th>
@@ -54,15 +57,22 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
     let scoreHtml = ``;
     let id = 0;
+
+    let scoreCount = 0;
+
     let totalScore = 0;
     scoreFields.forEach((field:string)=>{
       let score = 0;
       if(field in playerScore.scoreData){
-        totalScore = parseInt(playerScore.scoreData[field]);
+        const roundScore = playerScore.scoreData[field];
+        if(roundScore){
+          scoreCount++
+        }
+        score = parseInt(roundScore);
       }
 
       totalScore+= score;
-      scoreHtml+= `<td> ${this.addTextInput({
+      scoreHtml+= `<td> ${this.addShortInput({
         id: playerScore.name + "_" + id,
         [COMPONENT_LABEL_KEY]: '',
         inputType: "text",
@@ -72,28 +82,28 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
       id ++;
     })
 
-    html+= `<td><span>Total score: ${totalScore}</span></td>`
-    html+= scoreHtml;
+    html+= `
+      <td>
+        <span>Total score: ${totalScore}</span>
+      </td>
+      <td>  
+         ${self.addShortInput({ id: "add_score_"+playerScore.name,
+        [COMPONENT_LABEL_KEY]: '',
+        inputType: "text",
+        value: ""})}
+        <button
+          value="Add score"
+          ${this.createEvent(ADD_SCORE_EVENT_HANDLER, "click",{
+            playerName: playerScore.name,
+            scoreCount: scoreCount,
+            scoreData: data
+          })}
+          >Add score</button>
+      </td>
+    `
 
-    html+=`
-    <td>  
-       ${self.addTextInput({ id: "add_score_"+playerScore.name,
-      [COMPONENT_LABEL_KEY]: '',
-      inputType: "text",
-      value: ""})}
-      <button
-        value="Add score"
-        ${this.createEvent(ADD_SCORE_EVENT_HANDLER, "click",{
-          playerName: playerScore.name, 
-          scoreCount: scoreFields.length,
-          scoreData: data
-        })}
-      >
-        Add score
-      </button>
-    </td>
-    </tr>
-      `
+    html+= scoreHtml;
+    html+=`</tr>`
 
     return html;
   }
@@ -103,7 +113,7 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
     data.scoreFields.forEach(item=>{
       html+= `
-        <th scope="col">${item}</th>
+        <th scope="col">Round ${item}</th>
       `
     })
 
@@ -124,11 +134,13 @@ export class ScoreTrackerComponent extends BaseTemplateDynamicComponent{
 
     let self = this;
     let html = `
-       ${self.addTextInput({ id: "add_player_input",
+       ${self.addShortInput({ id: "add_player_input",
       [COMPONENT_LABEL_KEY]: '',
       inputType: "text",
       value: ""})}
       <button value="Add player" ${this.createEvent(ADD_PLAYER_HANDLER,"click")}>Add player</button>
+      <button value="Clear" ${this.createEvent(CLEAR_DATA_HANDLER,"click")}>Clear scores and players</button>
+
     <table>
       <thead>
         ${this.renderScoreFields(data)}
