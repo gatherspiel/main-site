@@ -8,7 +8,6 @@
  */
 
 
-
 import type {PlayerScore, PlayerScoreData} from "./types/PlayerScoreData.ts";
 import {
   ADD_PLAYER_HANDLER,
@@ -21,7 +20,7 @@ import {
   BaseTemplateDynamicComponent,
   type ComponentLoadConfig,
   GLOBAL_STATE_LOAD_CONFIG_KEY
-} from "../framework/src";
+} from "@bponnaluri/places-js";
 
 export const PLAYER_SCORES = "playerScores";
 

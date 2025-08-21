@@ -1,5 +1,5 @@
 
-import type {EventHandlerThunkConfig} from "../framework/src";
+import type {EventHandlerThunkConfig} from "@bponnaluri/places-js";
 import type {PlayerScore, PlayerScoreData} from "./types/PlayerScoreData.ts";
 import {PLAYER_SCORES} from "./ScoreTrackerComponent.ts";
 

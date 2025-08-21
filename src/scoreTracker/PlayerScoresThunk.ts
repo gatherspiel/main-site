@@ -1,7 +1,6 @@
 
-
 import {PLAYER_SCORES} from "./ScoreTrackerComponent.ts";
-import {BaseThunk} from "../framework/src";
+import {BaseThunk} from "@bponnaluri/places-js";
 
 
 class SessionStoreDataAction {
