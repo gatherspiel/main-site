@@ -59,3 +59,10 @@ const monopolyProperties = [
   "Ventnor Avenue",
   "Vermont Avenue",
   "Virginia Avenue"]
+
+
+// @ts-ignore
+document.getElementById("monopolyContent").style = getMonopolyGameStyle();
+
+// @ts-ignore
+document.getElementById("monopolyContent").innerHTML = getMonopolyHtml();

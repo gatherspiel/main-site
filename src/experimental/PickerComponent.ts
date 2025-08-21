@@ -1,4 +1,4 @@
-import {BasePage} from "../component/shared/BasePage.ts";
+import {BasePage} from "../shared/BasePage.ts";
 import {MersenneTwister19937, Random} from "random-js";
 
 export class PickerComponent extends BasePage {
@@ -11,6 +11,7 @@ export class PickerComponent extends BasePage {
     `
   }
 }
+
 
 if (!customElements.get("picker-component")) {
   customElements.define("picker-component", PickerComponent);
