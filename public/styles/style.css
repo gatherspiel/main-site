@@ -11,6 +11,16 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --clr-dark-blue: hsl(199, 100%, 20%);
+  --clr-darker-blue: hsl(199, 100%, 10%);
+  --clr-light-blue: hsl(199, 100%, 33%);
+  --clr-lighter-blue: hsl(206, 100%, 52%);
+  --clr-very-light-blue: hsl(206, 100%, 92%);
+}
+
+
+body {
+  width: fit-content;
 }
 
 a {
@@ -30,21 +40,21 @@ h1 {
 }
 
 #app {
-  max-width: 1280px;
+  width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
 
 .navbar {
-  max-width: fit-content;
+  width: fit-content;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
 }
 
 .content {
-  max-width: fit-content;
+  width: fit-content;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
@@ -64,7 +74,7 @@ h1 {
 }
 
 nav a {
-  font-size: 1.25rem;
+  font-size: 3rem;
   padding-bottom: 0.25rem;
   padding-top: 0.25rem;
   padding-left: 1rem;

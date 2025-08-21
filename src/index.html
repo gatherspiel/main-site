@@ -5,12 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/img/Meeple-Streamline-Tabler.svg" />
     <link rel="stylesheet" type="text/css" href="/styles/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="/component/HomepageComponent.ts"></script>
 
     <title>Gatherspiel</title>
   </head>
   <body>
-    <homepage-component></homepage-component>
+    <div class="container">
+    {{>navbar}}
+      <div class="content">
 
+      <h1>Gatherspiel</h1>
+
+      <img src="/img/gatherspiel_logo.svg" width="400px"></img>
+      <p>Gatherspiel is a non-commercial open source platform to support in person board game events. Contact
+        gulu@createthirdplaces.com for more details. </p>
+      </p>
+
+      <p><a href="https://dmvboardgames.com/">Here</a> is an example of a site built using the Gatherspiel platform.</p>
+      </div>
+    </div>
   </body>
 </html>

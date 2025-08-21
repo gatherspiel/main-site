@@ -1,14 +1,21 @@
 import { defineConfig } from "vite";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-// https://vite.dev/config/
+
+import handlebars from 'vite-plugin-handlebars';// https://vite.dev/config/
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   base: "./",
-
-
+  plugins:[
+    handlebars({
+      partialDirectory: resolve(__dirname, 'src/shared'),
+    }),
+  ],
+  optimizeDeps: {
+    disabled: false,
+  },
   root: "src/",
   publicDir: "../public",
   build: {
@@ -19,7 +26,9 @@ export default defineConfig({
         feedback: resolve(__dirname, "src/feedback.html"),
         help: resolve(__dirname, "src/help.html"),
         vision: resolve(__dirname, "src/vision.html"),
-        picker: resolve(__dirname, "src/picker.html")
+        picker: resolve(__dirname, "src/picker.html"),
+        score: resolve(__dirname, "src/score.html")
+
       },
     },
   },

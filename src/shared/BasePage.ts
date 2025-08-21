@@ -1,4 +1,4 @@
-import {getMonopolyGameStyle, getMonopolyHtml} from "../../boardgameInfo/monopolyInfo.ts";
+import {getMonopolyGameStyle, getMonopolyHtml} from "../boardgameInfo/monopolyInfo.ts";
 
 export abstract class BasePage extends HTMLElement {
   connectedCallback() {
@@ -10,6 +10,8 @@ export abstract class BasePage extends HTMLElement {
           <a href="vision.html">Vision</a>
           <a href="help.html">Looking to help </a>
           <a href="feedback.html">Share feedback</a>
+          <a href="score.html">Score tracker</a>
+
         </nav>
       </div>
       <div class="content">
