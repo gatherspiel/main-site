@@ -13,22 +13,19 @@ export default defineConfig({
       partialDirectory: resolve(__dirname, 'src/shared'),
     }),
   ],
-  optimizeDeps: {
-    disabled: false,
-  },
   root: "src/",
   publicDir: "../public",
   build: {
     outDir: "../dist",
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "src/index.html"),
+        designers: resolve(__dirname, "src/designers.html"),
         feedback: resolve(__dirname, "src/feedback.html"),
         help: resolve(__dirname, "src/help.html"),
-        vision: resolve(__dirname, "src/vision.html"),
+        main: resolve(__dirname, "src/index.html"),
         picker: resolve(__dirname, "src/picker.html"),
-        score: resolve(__dirname, "src/score.html")
-
+        score: resolve(__dirname, "src/score.html"),
+        vision: resolve(__dirname, "src/vision.html"),
       },
     },
   },
