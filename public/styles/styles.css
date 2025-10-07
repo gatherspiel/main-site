@@ -19,9 +19,7 @@
 }
 
 
-body {
-  width: fit-content;
-}
+
 
 a {
   font-weight: 500;
@@ -39,13 +37,20 @@ h1 {
   line-height: 1.1;
 }
 
-#app {
-  width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+nav a {
+  font-size: 3rem;
+  padding-bottom: 0.25rem;
+  padding-top: 0.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
+#container {
+  max-width:65rem;
+  margin-inline: auto;
+  padding-left:0.5rem;
+  padding-right:0.5rem;
+}
 .navbar {
   width: fit-content;
   text-align: center;
@@ -73,10 +78,3 @@ h1 {
   }
 }
 
-nav a {
-  font-size: 3rem;
-  padding-bottom: 0.25rem;
-  padding-top: 0.25rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
